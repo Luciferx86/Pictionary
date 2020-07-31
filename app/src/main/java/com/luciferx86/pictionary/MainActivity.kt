@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.graphics.Canvas
 import android.graphics.Color
 import android.util.Log
+import android.widget.ImageButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.slider.Slider
@@ -14,12 +15,20 @@ class MainActivity : AppCompatActivity() {
     lateinit var colorSelectionRecycler: RecyclerView;
     private lateinit var canvas: DoodleCanvas;
     lateinit var strokeSlider: Slider;
+    lateinit var deleteButton: ImageButton;
+    lateinit var undoButton: ImageButton;
+    lateinit var eraserSelector: ImageButton;
+    lateinit var paintSelector: ImageButton;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         colorSelectionRecycler = findViewById(R.id.colorOptionsLayout);
         canvas = findViewById(R.id.canvas);
         strokeSlider = findViewById(R.id.slider);
+        deleteButton = findViewById(R.id.deleteButton);
+        undoButton = findViewById(R.id.undoButton);
+        eraserSelector = findViewById(R.id.eraserSelector);
+        paintSelector = findViewById(R.id.paintSelector);
         val allColors: ArrayList<Int> = ArrayList();
         allColors.add(Color.RED);
         allColors.add(Color.BLUE);
@@ -49,6 +58,21 @@ class MainActivity : AppCompatActivity() {
             // Responds to when slider's value is changed
             Log.d("sliderVal", value.toString());
             canvas.setStrokeWidth(value);
+        }
+
+        undoButton.setOnClickListener {
+            canvas.undoMove();
+        }
+
+        eraserSelector.setOnClickListener {
+            canvas.enableErasing();
+        }
+        paintSelector.setOnClickListener {
+            canvas.enablePainting();
+        }
+
+        deleteButton.setOnClickListener {
+            canvas.clearCanvas();
         }
     }
 

@@ -71,6 +71,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageButton
+                        android:id="@+id/paintSelector"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginLeft="5dp"
@@ -81,6 +82,7 @@
                         android:src="@drawable/brush_icon" />
 
                     <ImageButton
+                        android:id="@+id/eraserSelector"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginLeft="5dp"
