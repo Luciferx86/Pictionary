@@ -7,6 +7,31 @@
     android:background="@drawable/bg"
     tools:context=".MainActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/currentWordLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/drawLayout"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:background="@drawable/curved_bg"
+            android:text="_ _ _ _ _ _ _"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <RelativeLayout
         android:id="@+id/drawLayout"
         android:layout_width="match_parent"
@@ -14,13 +39,75 @@
         android:layout_margin="15dp"
         android:background="@drawable/curved_bg"
         app:layout_constraintBottom_toTopOf="@id/userLayout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/currentWordLayout">
 
         <com.luciferx86.pictionary.DoodleCanvas
             android:id="@+id/canvas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/curved_bg" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@drawable/curved_bg"
+            android:id="@+id/gameInfoLayout"
+            android:layout_width="match_parent"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/joingameHeading"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:text="GAME CODE"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/joingameHeading"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:maxLength="4"
+                android:inputType="number"
+                android:text="4818"
+                android:textSize="30sp"
+                android:id="@+id/gameCodeNew"
+                android:layout_marginTop="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                app:layout_constraintTop_toBottomOf="@id/gameCodeNew"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="30dp"
+                android:text="Start"
+                android:id="@+id/startGameButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:scaleType="fitCenter"
+                android:src="@drawable/timer"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:text="30s" />
+        </FrameLayout>
     </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +128,11 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/chatLayout"
             app:layout_constraintTop_toTopOf="parent">
+            <androidx.recyclerview.widget.RecyclerView
+
+                android:id="@+id/activePlayersRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -66,9 +158,9 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
-                    android:layout_weight="3"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3">
 
                     <ImageButton
                         android:id="@+id/paintSelector"
@@ -102,11 +194,12 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/paint_bucket" />
                 </LinearLayout>
+
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/deleteButton"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_weight="1"
                     android:scaleType="fitCenter"
                     android:src="@drawable/delete_icon" />
 

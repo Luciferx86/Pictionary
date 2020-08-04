@@ -35,13 +35,13 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
             canvas.drawPath(pathToDraw, mPaint)
         }
 //        canvas.drawPath(mPath, mPaint);
-
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mPath = SerializablePath();
+
                 mPath.moveTo(event.x, event.y)
                 pathList.add(
                     PathPojo(
@@ -50,7 +50,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
                         mPaint.strokeWidth
                     )
                 )
-                mSocket.emit("touch", event.x, event.y);
+                mSocket.emit("touch", event.x / this.width, event.y / this.height);
 //                makeFirestoreChanges(DataToDraw("touch", event.x, event.y, mPaint.color, mPaint.strokeWidth));
                 invalidate()
                 return true;
@@ -59,7 +59,8 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
 
                 mPath.lineTo(event.x, event.y)
 //                makeFirestoreChanges(DataToDraw("move", event.x, event.y, mPaint.color, mPaint.strokeWidth));
-                mSocket.emit("move", event.x, event.y);
+                //emitting this way so that when receiving, point can be plotted according to screen height size
+                mSocket.emit("move", event.x / width, event.y / height);
                 invalidate()
                 return true
             }
@@ -86,7 +87,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
 
     fun setupSocketListeners() {
         val onTouchEvent: Emitter.Listener = Emitter.Listener { args ->
-            (getContext() as Activity).runOnUiThread { //Code for the UiThread
+            (context as Activity).runOnUiThread { //Code for the UiThread
                 val data = args[0] as JSONObject
                 var x: String? = null
                 var y: String? = null
@@ -100,7 +101,8 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
                 val touchX = x!!.toFloat()
                 val touchY = y!!.toFloat()
                 mPath = SerializablePath();
-                mPath.moveTo(touchX, touchY)
+                //moving according to screen size
+                mPath.moveTo(touchX * this.width, touchY * this.height)
                 pathList.add(
                     PathPojo(
                         mPath,
@@ -125,7 +127,8 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
                 Log.v("MoveEvent", "$x, $y")
                 val touchX = x!!.toFloat()
                 val touchY = y!!.toFloat()
-                mPath.lineTo(touchX, touchY)
+                //drawingf according to screen size
+                mPath.lineTo(touchX * this.width, touchY * this.height)
                 invalidate()
             }
         }
@@ -174,6 +177,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
                 Log.v("UndoChangeEvent", "$restore");
                 val isRestore = restore!!.toBoolean();
                 if (isRestore) {
+                    pathList.clear();
                     pathList.addAll(backupPathList);
                 } else {
                     if (pathList.size > 0) {
@@ -184,6 +188,16 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
             }
         }
 
+
+        val onClearEventListener: Emitter.Listener = Emitter.Listener { args ->
+            (context as Activity).runOnUiThread {
+                Log.v("ClearEvent", "clear");
+                backupPathList.clear()
+                backupPathList.addAll(pathList)
+                pathList.clear();
+                invalidate()
+            }
+        }
         val onConnectEvent = Emitter.Listener { (getContext() as Activity).runOnUiThread { } }
 
         mSocket.on("touch", onTouchEvent);
@@ -192,6 +206,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
         mSocket.on("changePaint", onPaintChangeEvent)
         mSocket.on("changeWidth", onWidthChangeListener)
         mSocket.on("undo", onUndoChangeListener);
+        mSocket.on("clear", onClearEventListener);
     }
 
 
@@ -219,6 +234,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
 
     fun enableErasing() {
         storeLastPaintStroke(mPaint);
+        mSocket.emit("changePaint",Color.WHITE);
         mPaint.color = Color.WHITE;
     }
 
@@ -235,6 +251,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
         backupPathList.clear()
         backupPathList.addAll(pathList)
         pathList.clear();
+        mSocket.emit("clear");
         makeFirestoreChanges(DataToDraw("clear", 0f, 0f, 0, 0f));
         invalidate();
     }

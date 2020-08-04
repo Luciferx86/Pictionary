@@ -1,13 +1,11 @@
 package com.luciferx86.pictionary
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 
-class NewActivity : AppCompatActivity() {
-    var dv: NewDoodle? = null
+class CharecterGenerationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-//        dv = NewDoodle(this);
         super.onCreate(savedInstanceState)
-        setContentView(dv);
+        setContentView(R.layout.activity_charecter_generation)
     }
 }
