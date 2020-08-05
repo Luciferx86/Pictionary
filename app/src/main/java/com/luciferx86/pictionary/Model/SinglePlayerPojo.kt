@@ -1,4 +1,4 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.Model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class SinglePlayerPojo : Serializable, Parcelable {
+open class SinglePlayerPojo : Serializable, Parcelable {
     @Expose
     @SerializedName("playerName")
     var playerName: String;
@@ -32,16 +32,18 @@ class SinglePlayerPojo : Serializable, Parcelable {
         dest.writeInt(this.rank)
     }
 
+    public constructor(incoming: Parcel) {
+        playerName = incoming.readString()!!;
+        score = incoming.readInt();
+        rank = incoming.readInt();
+    }
+
     override fun toString(): String {
         return "SinglePlayerPojo(playerName='$playerName', score=$score, rank=$rank)"
     }
 
 
-    protected constructor(incoming: Parcel) {
-        playerName = incoming.readString()!!;
-        score = incoming.readInt();
-        rank = incoming.readInt();
-    }
+
 
     constructor(playerName: String, score: Int, rank: Int) {
         this.playerName = playerName
@@ -58,6 +60,7 @@ class SinglePlayerPojo : Serializable, Parcelable {
 
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<SinglePlayerPojo> = object : Parcelable.Creator<SinglePlayerPojo> {
             override fun createFromParcel(source: Parcel): SinglePlayerPojo? {
                 return SinglePlayerPojo(source)

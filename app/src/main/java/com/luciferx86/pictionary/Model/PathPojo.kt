@@ -1,6 +1,5 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.Model
 
-import android.graphics.Path
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

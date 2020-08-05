@@ -1,6 +1,5 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.View.Adapter
 
-import android.content.res.ColorStateList
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.luciferx86.pictionary.R
+import com.luciferx86.pictionary.Model.SinglePlayerPojo
 
 class ActivePlayersAdapter(
     private val playerList: List<SinglePlayerPojo>
@@ -15,7 +16,10 @@ class ActivePlayersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return PlayerViewHolder(inflater, parent)
+        return PlayerViewHolder(
+            inflater,
+            parent
+        )
 
     }
 

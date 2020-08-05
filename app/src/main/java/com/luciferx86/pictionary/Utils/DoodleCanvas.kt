@@ -1,4 +1,4 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.Utils
 
 import android.app.Activity
 import android.content.Context
@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.google.firebase.firestore.FirebaseFirestore
+import com.luciferx86.pictionary.Model.PathPojo
+import com.luciferx86.pictionary.Model.SerializablePath
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import org.json.JSONException
@@ -18,6 +20,8 @@ import org.json.JSONObject
 
 class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
     View(context, attrs) {
+
+    var canDraw: Boolean = false;
     private var mPaint: Paint = Paint()
     private var lastPaintStroke: Paint = Paint()
     private var mPath: SerializablePath
@@ -40,29 +44,33 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                mPath = SerializablePath();
+                if(this.canDraw) {
+                    mPath = SerializablePath();
 
-                mPath.moveTo(event.x, event.y)
-                pathList.add(
-                    PathPojo(
-                        mPath,
-                        mPaint.color,
-                        mPaint.strokeWidth
+                    mPath.moveTo(event.x, event.y)
+                    pathList.add(
+                        PathPojo(
+                            mPath,
+                            mPaint.color,
+                            mPaint.strokeWidth
+                        )
                     )
-                )
-                mSocket.emit("touch", event.x / this.width, event.y / this.height);
+                    mSocket.emit("touch", event.x / this.width, event.y / this.height);
 //                makeFirestoreChanges(DataToDraw("touch", event.x, event.y, mPaint.color, mPaint.strokeWidth));
-                invalidate()
-                return true;
+                    invalidate()
+                    return true;
+                }
             }
             MotionEvent.ACTION_MOVE -> {
+                if(this.canDraw) {
 
-                mPath.lineTo(event.x, event.y)
+                    mPath.lineTo(event.x, event.y)
 //                makeFirestoreChanges(DataToDraw("move", event.x, event.y, mPaint.color, mPaint.strokeWidth));
-                //emitting this way so that when receiving, point can be plotted according to screen height size
-                mSocket.emit("move", event.x / width, event.y / height);
-                invalidate()
-                return true
+                    //emitting this way so that when receiving, point can be plotted according to screen height size
+                    mSocket.emit("move", event.x / width, event.y / height);
+                    invalidate()
+                    return true
+                }
             }
             MotionEvent.ACTION_UP -> {
             }
@@ -234,7 +242,7 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
 
     fun enableErasing() {
         storeLastPaintStroke(mPaint);
-        mSocket.emit("changePaint",Color.WHITE);
+        mSocket.emit("changePaint", Color.WHITE);
         mPaint.color = Color.WHITE;
     }
 
@@ -252,7 +260,15 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
         backupPathList.addAll(pathList)
         pathList.clear();
         mSocket.emit("clear");
-        makeFirestoreChanges(DataToDraw("clear", 0f, 0f, 0, 0f));
+        makeFirestoreChanges(
+            DataToDraw(
+                "clear",
+                0f,
+                0f,
+                0,
+                0f
+            )
+        );
         invalidate();
     }
 
@@ -299,5 +315,9 @@ class DoodleCanvas(context: Context?, attrs: AttributeSet?) :
             this.paintColor = paintColor;
             this.paintWidth = paintWidth;
         }
+    }
+
+    fun canUserDraw(canDraw: Boolean){
+        this.canDraw = canDraw;
     }
 }

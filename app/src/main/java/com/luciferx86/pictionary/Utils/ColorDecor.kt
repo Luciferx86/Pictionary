@@ -1,4 +1,4 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.Utils
 
 import android.graphics.Rect
 import android.view.View

@@ -1,4 +1,4 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.Model
 
 import android.os.Parcel
 import android.os.Parcelable

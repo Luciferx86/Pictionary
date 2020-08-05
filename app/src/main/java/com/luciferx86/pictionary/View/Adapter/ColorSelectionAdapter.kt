@@ -1,13 +1,13 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.View.Adapter
 
 import android.content.res.ColorStateList
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.luciferx86.pictionary.R
 
 class ColorSelectionAdapter(
     private val colorList: List<Int>, private val adapterOnClick: (Int) -> Unit
@@ -15,7 +15,10 @@ class ColorSelectionAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ColorViewHolder(inflater, parent)
+        return ColorViewHolder(
+            inflater,
+            parent
+        )
 
     }
 

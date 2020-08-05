@@ -1,20 +1,21 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.View.Activiy
 
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.JsonObject
+import com.luciferx86.pictionary.Model.SinglePlayerPojo
+import com.luciferx86.pictionary.R
 import io.socket.client.Ack
 import io.socket.client.IO
-import io.socket.emitter.Emitter
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -60,8 +61,11 @@ class LaunchpadActivity : AppCompatActivity() {
                         Log.d("GameCreated", "code " + data["code"]);
                         val gameState = data["gameState"] as JSONObject;
                         val i: Intent = Intent(this, MainActivity::class.java);
+                        val newPlayer = parsePlayerFromJSON(data["newPlayer"] as JSONObject);
+                        Log.d("NewPlayerVal", newPlayer.toString())
                         i.putExtra("gameCode", data["code"] as Int);
                         i.putExtra("gameState", gameState.toString());
+                        i.putExtra("newPlayer",newPlayer as Parcelable);
                         startActivity(i);
                     });
                 } else {
@@ -93,9 +97,13 @@ class LaunchpadActivity : AppCompatActivity() {
 
                         Log.d("GameJoined", "code " + data["gameState"]);
                         val gameState = data["gameState"] as JSONObject;
-                        val i: Intent = Intent(this, MainActivity::class.java);
-                        i.putExtra("gameCode", data["code"] as String);
+                        val i = Intent(this, MainActivity::class.java);
+                        val newPlayer = parsePlayerFromJSON(data["newPlayer"] as JSONObject);
+                        Log.d("NewPlayerVal", newPlayer.toString());
+                        val code: String = data["code"] as String;
+                        i.putExtra("gameCode", code.toInt());
                         i.putExtra("gameState", gameState.toString());
+                        i.putExtra("newPlayer",newPlayer as Parcelable);
                         startActivity(i);
                     });
                 } else {
@@ -105,5 +113,21 @@ class LaunchpadActivity : AppCompatActivity() {
 
             joinDialog.show()
         }
+    }
+
+    fun parsePlayerFromJSON(json: JSONObject): SinglePlayerPojo {
+        var playerName: String? = null
+        var playerScore: String? = null
+        var playerRank: String? = null
+        try {
+            playerName = json.getString("playerName")
+            playerScore = json.getString("score")
+            playerRank = json.getString("rank")
+            val newPlayer = SinglePlayerPojo(playerName, playerScore.toInt(), playerRank.toInt());
+            return newPlayer;
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return SinglePlayerPojo();
     }
 }
