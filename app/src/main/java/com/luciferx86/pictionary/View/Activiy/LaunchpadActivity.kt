@@ -65,7 +65,8 @@ class LaunchpadActivity : AppCompatActivity() {
                         Log.d("NewPlayerVal", newPlayer.toString())
                         i.putExtra("gameCode", data["code"] as Int);
                         i.putExtra("gameState", gameState.toString());
-                        i.putExtra("newPlayer",newPlayer as Parcelable);
+                        i.putExtra("newPlayer", newPlayer as Parcelable);
+                        i.putExtra("gameCreator", true);
                         startActivity(i);
                     });
                 } else {
@@ -103,7 +104,8 @@ class LaunchpadActivity : AppCompatActivity() {
                         val code: String = data["code"] as String;
                         i.putExtra("gameCode", code.toInt());
                         i.putExtra("gameState", gameState.toString());
-                        i.putExtra("newPlayer",newPlayer as Parcelable);
+                        i.putExtra("newPlayer", newPlayer as Parcelable);
+                        i.putExtra("gameCreator", false);
                         startActivity(i);
                     });
                 } else {

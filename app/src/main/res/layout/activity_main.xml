@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-
+            android:id="@+id/currentWord"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/curved_bg"
@@ -44,6 +44,7 @@
             android:id="@+id/canvas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:background="@drawable/curved_bg" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,6 +53,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/curved_bg"
             android:clickable="true"
+
             android:focusable="true">
 
             <TextView
@@ -99,6 +101,45 @@
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone">
+
+            <TextView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:background="@drawable/curved_bg"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/secondWord"
+                android:id="@+id/firstWord"
+                android:text="First Word"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/firstWord"
+                app:layout_constraintBottom_toTopOf="@id/thirdWord"
+                android:id="@+id/secondWord"
+                android:text="Second Word"
+                android:textSize="20sp"
+                android:background="@drawable/curved_bg"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/secondWord"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:id="@+id/thirdWord"
+                android:text="Third Word"
+                android:textSize="20sp"
+                android:background="@drawable/curved_bg"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
