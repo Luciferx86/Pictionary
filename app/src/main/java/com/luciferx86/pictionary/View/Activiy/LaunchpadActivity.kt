@@ -18,6 +18,7 @@ import io.socket.client.Ack
 import io.socket.client.IO
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Exception
 
 
 class LaunchpadActivity : AppCompatActivity() {
@@ -97,16 +98,25 @@ class LaunchpadActivity : AppCompatActivity() {
                         val data = it[0] as JSONObject
 
                         Log.d("GameJoined", "code " + data["gameState"]);
-                        val gameState = data["gameState"] as JSONObject;
-                        val i = Intent(this, MainActivity::class.java);
-                        val newPlayer = parsePlayerFromJSON(data["newPlayer"] as JSONObject);
-                        Log.d("NewPlayerVal", newPlayer.toString());
-                        val code: String = data["code"] as String;
-                        i.putExtra("gameCode", code.toInt());
-                        i.putExtra("gameState", gameState.toString());
-                        i.putExtra("newPlayer", newPlayer as Parcelable);
-                        i.putExtra("gameCreator", false);
-                        startActivity(i);
+                        try {
+                            val gameState = data["gameState"] as JSONObject;
+                            val i = Intent(this, MainActivity::class.java);
+                            val newPlayer =
+                                parsePlayerFromJSON(data["newPlayer"] as JSONObject);
+                            Log.d("NewPlayerVal", newPlayer.toString());
+                            val code: String = data["code"] as String;
+                            i.putExtra("gameCode", code.toInt());
+                            i.putExtra("gameState", gameState.toString());
+                            i.putExtra("newPlayer", newPlayer as Parcelable);
+                            i.putExtra("gameCreator", false);
+                            startActivity(i);
+
+                        } catch (e: Exception) {
+                            e.printStackTrace();
+                            runOnUiThread {
+                                Toast.makeText(this, "Invalid Game Code", Toast.LENGTH_LONG).show();
+                            }
+                        }
                     });
                 } else {
                     Toast.makeText(this, "Code Invalid", Toast.LENGTH_LONG).show();
