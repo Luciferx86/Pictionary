@@ -142,6 +142,33 @@
                 android:layout_height="wrap_content"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/whoseTurnLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/curved_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <TextView
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:background="@drawable/curved_bg"
+                app:layout_constraintRight_toRightOf="parent"
+                android:id="@+id/whoseTurnText"
+                android:text="Luciferx86 is now drawing"
+                android:textSize="25sp"
+                android:paddingTop="20sp"
+                android:paddingBottom="20sp"
+                android:paddingLeft="10sp"
+                android:paddingRight="10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"

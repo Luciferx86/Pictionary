@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.luciferx86.pictionary.Model.SinglePlayerPojo
 import com.luciferx86.pictionary.R
+import com.luciferx86.pictionary.RootApplication
+import com.luciferx86.pictionary.RootApplication.mSocket
 import io.socket.client.Ack
 import io.socket.client.IO
 import org.json.JSONException
@@ -25,13 +27,20 @@ class LaunchpadActivity : AppCompatActivity() {
 
     lateinit var createGame: Button;
     lateinit var joinGame: Button;
-    private val mSocket = IO.socket("https://pictionary-server.herokuapp.com");
+//    private val mSocket = IO.socket("https://pict-dup.herokuapp.com");
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launchpad)
-        mSocket.connect();
+        initSocket();
+        mSocket?.connect();
         initViews();
         setClickListeners();
+
+    }
+
+    private fun initSocket(){
+        mSocket = IO.socket("https://pictionary-server.herokuapp.com");
     }
 
     fun initViews() {
@@ -40,7 +49,7 @@ class LaunchpadActivity : AppCompatActivity() {
 
     }
 
-    fun setClickListeners() {
+    private fun setClickListeners() {
         createGame.setOnClickListener {
 
             Log.d("Create", "Creating Game");
@@ -57,17 +66,18 @@ class LaunchpadActivity : AppCompatActivity() {
                     createDialog.findViewById<TextView>(R.id.createGameUsername);
                 val username = createGameUsername?.text.toString()
                 if (username.length >= 4) {
-                    mSocket.emit("createGame", username, Ack() {
+                    mSocket?.emit("createGame", username, Ack() {
                         val data = it[0] as JSONObject
-                        Log.d("GameCreated", "code " + data["code"]);
+                        Log.d("GameCreated", "gameCode " + data["gameCode"]);
                         val gameState = data["gameState"] as JSONObject;
                         val i: Intent = Intent(this, MainActivity::class.java);
                         val newPlayer = parsePlayerFromJSON(data["newPlayer"] as JSONObject);
                         Log.d("NewPlayerVal", newPlayer.toString())
-                        i.putExtra("gameCode", data["code"] as Int);
+                        i.putExtra("gameCode", data["gameCode"] as Int);
                         i.putExtra("gameState", gameState.toString());
                         i.putExtra("newPlayer", newPlayer as Parcelable);
                         i.putExtra("gameCreator", true);
+//                        createDialog.dismiss()
                         startActivity(i);
                     });
                 } else {
@@ -94,7 +104,7 @@ class LaunchpadActivity : AppCompatActivity() {
                 val codeText = joinCodeText?.text.toString()
                 val username = joinUsernameText?.text.toString()
                 if (codeText.length == 4 && username.length >= 4) {
-                    mSocket.emit("joinGame", username, codeText, Ack() {
+                    mSocket?.emit("joinGame", username, codeText, Ack() {
                         val data = it[0] as JSONObject
 
                         Log.d("GameJoined", "code " + data["gameState"]);
@@ -104,7 +114,7 @@ class LaunchpadActivity : AppCompatActivity() {
                             val newPlayer =
                                 parsePlayerFromJSON(data["newPlayer"] as JSONObject);
                             Log.d("NewPlayerVal", newPlayer.toString());
-                            val code: String = data["code"] as String;
+                            val code: String = data["gameCode"] as String;
                             i.putExtra("gameCode", code.toInt());
                             i.putExtra("gameState", gameState.toString());
                             i.putExtra("newPlayer", newPlayer as Parcelable);
@@ -127,7 +137,7 @@ class LaunchpadActivity : AppCompatActivity() {
         }
     }
 
-    fun parsePlayerFromJSON(json: JSONObject): SinglePlayerPojo {
+    private fun parsePlayerFromJSON(json: JSONObject): SinglePlayerPojo {
         var playerName: String? = null
         var playerScore: String? = null
         var playerRank: String? = null

@@ -4,8 +4,12 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -21,20 +25,18 @@ import com.luciferx86.pictionary.Model.ChatPojo
 import com.luciferx86.pictionary.Model.GameStatePojo
 import com.luciferx86.pictionary.Model.SinglePlayerPojo
 import com.luciferx86.pictionary.R
+import com.luciferx86.pictionary.RootApplication.mSocket
 import com.luciferx86.pictionary.Utils.ColorDecor
 import com.luciferx86.pictionary.Utils.DoodleCanvas
 import com.luciferx86.pictionary.View.Adapter.ActivePlayersAdapter
 import com.luciferx86.pictionary.View.Adapter.ChatRecyclerAdapter
 import com.luciferx86.pictionary.View.Adapter.ColorSelectionAdapter
 import io.socket.client.Ack
-import io.socket.client.IO
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -66,6 +68,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var gameCodeText: TextView;
     lateinit var sendMessageButton: ImageView;
     lateinit var gameInfoLayout: ConstraintLayout;
+    lateinit var whoseTurnLayout: ConstraintLayout;
+    lateinit var whoseTurnText: TextView;
     private val allColors: ArrayList<Int> = ArrayList();
     private val allPlayers: ArrayList<SinglePlayerPojo> = ArrayList();
     private val activePlayersAdapter =
@@ -78,7 +82,6 @@ class MainActivity : AppCompatActivity() {
 
     private val chatAdapter = ChatRecyclerAdapter(this, allMessages);
 
-    private val mSocket = IO.socket("https://pictionary-server.herokuapp.com");
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -87,24 +90,20 @@ class MainActivity : AppCompatActivity() {
         setSocketListeners();
         initGameState();
         setClickListeners();
-
-
-
-        initRecyclers();
-
-
-        mSocket.connect();
-
+        initRecyclers()
         addColors();
-
-
-//        allPlayers.add("Luciferx86");
-//        allPlayers.add("smolbean");
-
-
     }
 
-    fun initTimer() {
+    private fun getPlayerNameFromRank(rank: Int): String {
+        for (player: SinglePlayerPojo in allPlayers) {
+            if (player.rank == rank) {
+                return player.playerName;
+            }
+        }
+        return "";
+    }
+
+    private fun initTimer() {
         timerVal = 90;
         waitTimer = object : CountDownTimer(91 * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -124,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun initGameState() {
         currentPlayer = intent.getParcelableExtra("newPlayer");
         val gameState: String? = intent.getStringExtra("gameState");
@@ -141,23 +141,25 @@ class MainActivity : AppCompatActivity() {
         canvas.setStrokeColor(color);
     }
 
-    fun addColors() {
-        allColors.add(Color.RED);
-        allColors.add(Color.BLUE);
-        allColors.add(Color.GRAY);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.GREEN);
-        allColors.add(Color.LTGRAY);
-        allColors.add(Color.MAGENTA);
-        allColors.add(Color.CYAN);
-        allColors.add(Color.BLACK);
-        allColors.add(Color.YELLOW);
+    private fun addColors() {
+        allColors.add(Color.parseColor("#ffffff"));
+        allColors.add(Color.parseColor("#cfcfcf"));
+        allColors.add(Color.parseColor("#ff0000"));
+        allColors.add(Color.parseColor("#ff9900"));
+        allColors.add(Color.parseColor("#E0AC69"));
+        allColors.add(Color.parseColor("#ffff00"));
+        allColors.add(Color.parseColor("#a2ff00"));
+        allColors.add(Color.parseColor("#37ff00"));
+        allColors.add(Color.parseColor("#00ff99"));
+        allColors.add(Color.parseColor("#00ffe1"));
+        allColors.add(Color.parseColor("#00c8ff"));
+        allColors.add(Color.parseColor("#001aff"));
+        allColors.add(Color.parseColor("#a01ef7"));
+        allColors.add(Color.parseColor("#d400ff"));
+        allColors.add(Color.parseColor("#f5b0e5"));
+        allColors.add(Color.parseColor("#c9661e"));
+        allColors.add(Color.parseColor("#8b4513"));
+        allColors.add(Color.parseColor("#000000"));
     }
 
     fun initViews() {
@@ -181,7 +183,8 @@ class MainActivity : AppCompatActivity() {
         startGameButton = findViewById(R.id.startGameButton);
         gameInfoLayout = findViewById(R.id.gameInfoLayout);
         chatMessageEditText = findViewById(R.id.chatMessageEditText);
-
+        whoseTurnLayout = findViewById(R.id.whoseTurnLayout);
+        whoseTurnText = findViewById(R.id.whoseTurnText);
         paintBucket = findViewById(R.id.paintBucket);
         sendMessageButton = findViewById(R.id.sendGuess);
 
@@ -221,7 +224,7 @@ class MainActivity : AppCompatActivity() {
 
         startGameButton.setOnClickListener {
 
-            mSocket.emit("startGame", gameCode, Ack {
+            mSocket?.emit("startGame", gameCode, Ack {
                 runOnUiThread {
                     wordSelectionLayout.visibility = View.VISIBLE;
                     val data = it[0] as JSONObject;
@@ -264,7 +267,7 @@ class MainActivity : AppCompatActivity() {
     private fun callWordSelection(value: String) {
         Log.d("SelectedWord", value);
         wordSelectionLayout.visibility = View.GONE;
-        mSocket.emit("wordSelect", value, gameCode, Ack {
+        mSocket?.emit("wordSelect", value, gameCode, currentPlayer?.playerName, Ack {
             runOnUiThread {
                 makDrawingViewsVisible();
                 val data = it[0] as JSONObject;
@@ -324,7 +327,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setSocketListeners() {
-        mSocket.on("joinGame", Emitter.Listener { args ->
+        mSocket?.on("joinGame", Emitter.Listener { args ->
             runOnUiThread { //Code for the UiThread
                 val data = args[0] as JSONObject
                 val newPlayerJson = data["newPlayer"] as JSONObject;
@@ -333,7 +336,7 @@ class MainActivity : AppCompatActivity() {
                 activePlayersAdapter.notifyDataSetChanged();
             }
         });
-        mSocket.on("newMessage", Emitter.Listener { args ->
+        mSocket?.on("newMessage", Emitter.Listener { args ->
             runOnUiThread { //Code for the UiThread
                 val data = args[0] as JSONObject
                 val newMessage = data["newMessage"] as JSONObject;
@@ -356,8 +359,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         });
-        mSocket.on("turnChange", Emitter.Listener { args ->
-//            runOnUiThread { //Code for the UiThread
+        mSocket?.on("turnChange", Emitter.Listener { args ->
             canvas.clearCanvas();
             cancelTimer();
             val data = args[0] as JSONObject
@@ -370,56 +372,81 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     drawingOptionsLayout.visibility = View.GONE;
                 }
+            } else {
+                mSocket?.emit("genRandomWords", Ack { words ->
+                    val data = words[0] as JSONObject;
+                    val randWords = data["randomWords"] as JSONArray;
+                    firstWord.text = randWords[0].toString();
+                    secondWord.text = randWords[1].toString();
+                    thirdWord.text = randWords[2].toString();
+                    runOnUiThread {
+                        wordSelectionLayout.visibility = View.VISIBLE;
+                    }
+                })
             }
         });
 
-        mSocket.on("startGame", Emitter.Listener { args ->
+        mSocket?.on("startGame", Emitter.Listener { args ->
             runOnUiThread { //Code for the UiThread
                 canDraw = false;
                 canvas.canUserDraw(false);
                 drawingOptionsLayout.visibility = View.GONE;
                 gameInfoLayout.visibility = View.GONE;
             }
-
-
         });
 
-        mSocket.on("wordSelect", Emitter.Listener { args ->
+        mSocket?.on("wordSelect", Emitter.Listener { args ->
             runOnUiThread { //Code for the UiThread
                 val data = args[0] as JSONObject;
                 val wordHint = data["wordHint"] as String;
+                val whoseDrawing = data["whoseDrawing"] as String;
                 currentWord.text = wordHint
+                showWhoseTurn(whoseDrawing);
             }
-
-
         });
 
-        mSocket.on("timerVal", Emitter.Listener { args ->
+        mSocket?.on("timerVal", Emitter.Listener { args ->
             runOnUiThread { //Code for the UiThread
                 val data = args[0] as JSONObject;
                 val timerVal = data["timerVal"] as Int;
                 timerCount.text = timerVal.toString();
             }
-
-
         });
+    }
+
+    private fun showWhoseTurn(playerName: String) {
+        whoseTurnText.text = "$playerName is Drawing!"
+        whoseTurnLayout.visibility = View.VISIBLE;
+        val animation: Animation = AnimationUtils.loadAnimation(
+            applicationContext,
+            R.anim.drawing_bounce
+        )
+        startGameButton.startAnimation(animation);
+        Looper.myLooper()?.let {
+            Handler(it).postDelayed({
+                //Your Code
+                runOnUiThread {
+                    whoseTurnLayout.visibility = View.GONE;
+                }
+            }, 2000)
+        }
+
     }
 
     private fun sendGuess() {
         if (chatMessageEditText.text.toString().isNotEmpty()) {
             val guess = chatMessageEditText.text.toString();
             chatMessageEditText.text = "";
-            mSocket.emit("newMessage", guess, currentPlayer?.rank, gameCode, Ack { it ->
+            mSocket?.emit("newMessage", guess, currentPlayer?.rank, gameCode, Ack { it ->
                 val data = it[0] as JSONObject;
                 Log.d("NewMessage", it[0].toString());
                 val correctGuess = data["wordGuessed"] as Boolean;
                 val isMyTurn = data["isMyTurn"] as Boolean;
                 Log.d("NewMessage", correctGuess.toString());
                 if (correctGuess) {
-
                     allMessages.add(ChatPojo("You Guessed the word!", "Game"));
                     if (isMyTurn) {
-                        mSocket.emit("genRandomWords", Ack { words ->
+                        mSocket?.emit("genRandomWords", Ack { words ->
                             val data = words[0] as JSONObject;
                             val randWords = data["randomWords"] as JSONArray;
                             firstWord.text = randWords[0].toString();
@@ -449,7 +476,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateRandomWords() {
-        mSocket.emit("turnChange", currentPlayer?.rank, gameCode, Ack {
+        mSocket?.emit("turnChange", currentPlayer?.rank, gameCode, Ack {
             val data = it[0] as JSONObject;
             val whoseTurn = data["whoseTurn"] as Int;
             runOnUiThread { //Code for the UiThread

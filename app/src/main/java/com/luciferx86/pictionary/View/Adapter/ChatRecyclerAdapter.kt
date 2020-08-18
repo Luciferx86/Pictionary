@@ -1,6 +1,7 @@
 package com.luciferx86.pictionary.View.Adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,9 @@ class ChatRecyclerAdapter(
             val message: ChatPojo? = allMessages[pos]
             val messageToDisplay = "<b>${message?.messageFrom}</b>: ${message?.messageBody}"
             viewHolder.messageBody.text = Html.fromHtml(messageToDisplay)
+            if(message?.messageFrom.equals("Game")){
+                viewHolder.messageBody.setTextColor(Color.parseColor("#1fa32c"));
+            }
         }
     }
 
