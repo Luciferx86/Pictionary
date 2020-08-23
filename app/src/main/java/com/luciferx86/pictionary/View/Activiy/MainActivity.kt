@@ -27,6 +27,7 @@ import com.luciferx86.pictionary.RootApplication.mSocket
 import com.luciferx86.pictionary.Utils.ColorDecor
 import com.luciferx86.pictionary.Utils.DoodleCanvas
 import com.luciferx86.pictionary.View.Adapter.ActivePlayersAdapter
+import com.luciferx86.pictionary.View.Adapter.AllScoresRecyclerAdapter
 import com.luciferx86.pictionary.View.Adapter.ChatRecyclerAdapter
 import com.luciferx86.pictionary.View.Adapter.ColorSelectionAdapter
 import io.socket.client.Ack
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var colorSelectionRecycler: RecyclerView;
     private lateinit var activePlayersRecycler: RecyclerView;
     lateinit var chatRecycler: RecyclerView;
+    lateinit var allScoresRecycler: RecyclerView;
     private lateinit var canvas: DoodleCanvas;
     lateinit var currentWord: TextView;
     lateinit var timerCount: TextView;
@@ -64,15 +66,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var startGameButton: Button;
     lateinit var wordSelectionLayout: ConstraintLayout;
     lateinit var gameCodeText: TextView;
+    lateinit var allScoresLayout: ConstraintLayout;
     lateinit var sendMessageButton: ImageView;
     lateinit var gameInfoLayout: ConstraintLayout;
     lateinit var whoseTurnLayout: ConstraintLayout;
     lateinit var whoseTurnText: TextView;
     private val allColors: ArrayList<Int> = ArrayList();
     private val allPlayers: ArrayList<SinglePlayerPojo> = ArrayList();
+    private val playersScore: ArrayList<ScoreCard> = ArrayList();
     private val activePlayersAdapter =
         ActivePlayersAdapter(allPlayers);
     private val allMessages = ArrayList<ChatPojo>();
+    private val scoreAdapter = AllScoresRecyclerAdapter(playersScore);
     private val colorAdapter =
         ColorSelectionAdapter(
             allColors,
@@ -165,6 +170,7 @@ class MainActivity : AppCompatActivity() {
         firstWord = findViewById(R.id.firstWord)
         secondWord = findViewById(R.id.secondWord)
         thirdWord = findViewById(R.id.thirdWord)
+        allScoresLayout = findViewById(R.id.allScoresLayout);
         colorSelectionRecycler = findViewById(R.id.colorOptionsLayout);
         activePlayersRecycler = findViewById(R.id.activePlayersRecycler);
         timerCount = findViewById(R.id.timerCount);
@@ -185,6 +191,8 @@ class MainActivity : AppCompatActivity() {
         whoseTurnText = findViewById(R.id.whoseTurnText);
         paintBucket = findViewById(R.id.paintBucket);
         sendMessageButton = findViewById(R.id.sendGuess);
+
+        allScoresRecycler = findViewById(R.id.allScoresRecycler)
 
         FirebaseApp.initializeApp(this);
         gameCode = intent.getIntExtra("gameCode", 0);
@@ -298,6 +306,9 @@ class MainActivity : AppCompatActivity() {
             )
         );
 
+        allScoresRecycler.adapter = scoreAdapter;
+        allScoresRecycler.layoutManager = GridLayoutManager(this, 2);
+
 
         activePlayersRecycler.adapter = activePlayersAdapter;
         activePlayersRecycler.layoutManager = LinearLayoutManager(applicationContext);
@@ -359,6 +370,9 @@ class MainActivity : AppCompatActivity() {
         });
         mSocket?.on("turnChange", Emitter.Listener { args ->
             canvas.clearCanvas();
+            runOnUiThread {
+                allScoresLayout.visibility = View.GONE;
+            }
             cancelTimer();
             val data = args[0] as JSONObject
             val whoseTurn = data["whoseTurn"] as Int;
@@ -423,6 +437,26 @@ class MainActivity : AppCompatActivity() {
                 updateGameScores(allScores);
             }
         }
+
+        mSocket?.on("roundChange"){args ->
+            val data = args[0] as JSONObject;
+            val allPlayers = data["playerStats"] as JSONArray;
+            parsePlayerScores(allPlayers);
+        }
+    }
+
+
+    private fun parsePlayerScores(scores: JSONArray){
+        for(i in 0..scores.length()-1){
+            Log.d("ScoreVal",scores[i].toString());
+            val currScore = scores[i] as JSONObject;
+            playersScore.add(ScoreCard(currScore["playerName"] as String, currScore["score"] as Int));
+
+        }
+        runOnUiThread {
+            allScoresLayout.visibility = View.VISIBLE;
+            scoreAdapter.notifyDataSetChanged();
+        }
     }
 
     private fun showWhoseTurn(playerName: String) {
@@ -464,32 +498,9 @@ class MainActivity : AppCompatActivity() {
                 val data = it[0] as JSONObject;
                 Log.d("NewMessage", it[0].toString());
                 val correctGuess = data["wordGuessed"] as Boolean;
-                val isMyTurn = data["isMyTurn"] as Boolean;
                 Log.d("NewMessage", correctGuess.toString());
                 if (correctGuess) {
                     allMessages.add(ChatPojo("You Guessed the word!", "Game"));
-                    if (isMyTurn) {
-                        val allScoresString = data["allScores"];
-                        val allScores: ArrayList<ScoreCard> =
-                            Gson().fromJson(
-                                allScoresString.toString(),
-                                object : TypeToken<ArrayList<ScoreCard>>() {}.type
-                            )
-                        runOnUiThread {
-                            updateGameScores(allScores);
-                        }
-                        mSocket?.emit("genRandomWords", Ack { words ->
-                            val data = words[0] as JSONObject;
-                            val randWords = data["randomWords"] as JSONArray;
-                            firstWord.text = randWords[0].toString();
-                            secondWord.text = randWords[1].toString();
-                            thirdWord.text = randWords[2].toString();
-                            runOnUiThread {
-                                wordSelectionLayout.visibility = View.VISIBLE;
-                            }
-                        })
-
-                    }
                 } else {
                     allMessages.add(ChatPojo(guess, currentPlayer?.playerName));
                 }

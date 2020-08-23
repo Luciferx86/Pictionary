@@ -9,6 +9,7 @@ import android.os.Parcelable
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,7 @@ class LaunchpadActivity : AppCompatActivity() {
 
     lateinit var createGame: Button;
     lateinit var joinGame: Button;
+    lateinit var createAvatar: Button;
 //    private val mSocket = IO.socket("https://pict-dup.herokuapp.com");
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,14 +41,14 @@ class LaunchpadActivity : AppCompatActivity() {
 
     }
 
-    private fun initSocket(){
+    private fun initSocket() {
         mSocket = IO.socket("https://pictionary-server.herokuapp.com");
     }
 
     fun initViews() {
         createGame = findViewById(R.id.createGameButton);
         joinGame = findViewById(R.id.joinGameButton);
-
+        createAvatar = findViewById(R.id.createAvatar);
     }
 
     private fun setClickListeners() {
@@ -64,9 +66,12 @@ class LaunchpadActivity : AppCompatActivity() {
             createDialog.findViewById<Button>(R.id.createGameDialogButton)?.setOnClickListener {
                 val createGameUsername =
                     createDialog.findViewById<TextView>(R.id.createGameUsername);
+                val roundsCountSpinner = createDialog.findViewById<Spinner>(R.id.roundsCountSpinner);
                 val username = createGameUsername?.text.toString()
                 if (username.length >= 4) {
-                    mSocket?.emit("createGame", username, Ack() {
+                    val roundsCount = roundsCountSpinner.selectedItem.toString().toInt();
+
+                    mSocket?.emit("createGame", username, roundsCount, Ack() {
                         val data = it[0] as JSONObject
                         Log.d("GameCreated", "gameCode " + data["gameCode"]);
                         val gameState = data["gameState"] as JSONObject;
@@ -134,6 +139,11 @@ class LaunchpadActivity : AppCompatActivity() {
             }
 
             joinDialog.show()
+        }
+
+        createAvatar.setOnClickListener{
+            val i = Intent(this, CharecterGenerationActivity::class.java);
+            startActivity(i);
         }
     }
 

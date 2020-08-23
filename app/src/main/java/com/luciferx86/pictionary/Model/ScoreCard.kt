@@ -41,7 +41,7 @@ open class ScoreCard : Serializable, Parcelable {
 
 
 
-    constructor(playerName: String, score: Int, rank: Int) {
+    constructor(playerName: String, score: Int) {
         this.playerName = playerName
         this.score = score
     }

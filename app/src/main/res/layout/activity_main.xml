@@ -44,7 +44,6 @@
             android:id="@+id/canvas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:background="@drawable/curved_bg" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,11 +52,11 @@
             android:layout_height="match_parent"
             android:background="@drawable/curved_bg"
             android:clickable="true"
-
-            android:focusable="true">
+            android:focusable="true"
+            android:visibility="visible">
 
             <TextView
-                android:id="@+id/joingameHeading"
+                android:id="@+id/joinGameHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -79,7 +78,7 @@
                 android:textSize="30sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/joingameHeading" />
+                app:layout_constraintTop_toBottomOf="@id/joinGameHeading" />
 
             <Button
                 android:id="@+id/startGameButton"
@@ -103,45 +102,46 @@
             android:visibility="gone">
 
             <TextView
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:background="@drawable/curved_bg"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/secondWord"
                 android:id="@+id/firstWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/curved_bg"
+                android:padding="10dp"
                 android:text="First Word"
                 android:textSize="20sp"
-                android:padding="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
+                app:layout_constraintBottom_toTopOf="@id/secondWord"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/firstWord"
-                app:layout_constraintBottom_toTopOf="@id/thirdWord"
-                android:id="@+id/secondWord"
-                android:text="Second Word"
-                android:textSize="20sp"
-                android:background="@drawable/curved_bg"
-                android:padding="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                app:layout_constraintTop_toBottomOf="@id/secondWord"
+                android:id="@+id/secondWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/curved_bg"
+                android:padding="10dp"
+                android:text="Second Word"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/thirdWord"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/firstWord" />
+
+            <TextView
+                android:id="@+id/thirdWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/curved_bg"
+                android:padding="10dp"
+                android:text="Third Word"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:id="@+id/thirdWord"
-                android:text="Third Word"
-                android:textSize="20sp"
-                android:background="@drawable/curved_bg"
-                android:padding="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:layout_constraintTop_toBottomOf="@id/secondWord" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/whoseTurnLayout"
             android:layout_width="match_parent"
@@ -153,20 +153,52 @@
 
             <TextView
 
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:background="@drawable/curved_bg"
-                app:layout_constraintRight_toRightOf="parent"
                 android:id="@+id/whoseTurnText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/curved_bg"
+                android:paddingLeft="10sp"
+                android:paddingTop="20sp"
+                android:paddingRight="10sp"
+                android:paddingBottom="20sp"
                 android:text="Luciferx86 is now drawing"
                 android:textSize="25sp"
-                android:paddingTop="20sp"
-                android:paddingBottom="20sp"
-                android:paddingLeft="10sp"
-                android:paddingRight="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/allScoresLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/curved_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <TextView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="10dp"
+                android:textSize="30sp"
+                android:id="@+id/roundEndedText"
+                app:layout_constraintBottom_toTopOf="@id/allScoresRecycler"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="3rd Round ended!"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/allScoresRecycler"
+                app:layout_constraintTop_toBottomOf="@id/roundEndedText"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_height="0dp"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -187,10 +219,38 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:text="30s"
+                android:text="30"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/roundsCountLayout"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/rounds_bg" />
+
+            <TextView
+                android:id="@+id/currentRoundCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+
+                android:text="1/3"
                 android:textStyle="bold" />
         </FrameLayout>
     </RelativeLayout>
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/userLayout"
@@ -235,11 +295,11 @@
                 android:id="@+id/drawingOptionsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:visibility="gone"
                 android:orientation="vertical"
-                app:layout_constraintVertical_weight="5"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/chatAreaLayout"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_weight="5">
 
                 <LinearLayout
                     android:id="@+id/drawActionsLayout"
@@ -320,12 +380,12 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:layout_weight="1"
                     android:id="@+id/colorOptionsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="1"
                     app:layout_constraintBottom_toTopOf="@id/chatAreaLayout"
                     app:layout_constraintTop_toBottomOf="@id/sliderLayout" />
 
@@ -336,10 +396,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginLeft="10dp"
-                app:layout_constraintVertical_weight="2"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toTopOf="@id/chatMessageLayout"
-                app:layout_constraintTop_toBottomOf="@id/drawingOptionsLayout" />
+                app:layout_constraintTop_toBottomOf="@id/drawingOptionsLayout"
+                app:layout_constraintVertical_weight="2" />
 
             <LinearLayout
                 android:id="@+id/chatMessageLayout"
