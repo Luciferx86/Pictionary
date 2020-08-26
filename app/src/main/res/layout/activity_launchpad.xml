@@ -6,36 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".View.Activiy.LaunchpadActivity">
 
+
+    <include
+        android:id="@+id/avatarLayout"
+        layout="@layout/avatar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/createGameButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageButton
+        android:id="@+id/randomizeAvatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/dice"
+        app:layout_constraintBottom_toBottomOf="@id/avatarLayout"
+        app:layout_constraintLeft_toRightOf="@id/avatarLayout"
+        app:layout_constraintTop_toTopOf="@id/avatarLayout" />
+
+    <EditText
+        android:id="@+id/userNameField"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="username"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/createGameButton"
+        app:layout_constraintTop_toBottomOf="@id/avatarLayout" />
+
+
     <Button
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/createGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create game"
         app:layout_constraintBottom_toTopOf="@id/joinGameButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/createGameButton"
-        android:text="Create game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintTop_toBottomOf="@id/userNameField" />
 
     <Button
-        app:layout_constraintTop_toBottomOf="@id/createGameButton"
-        app:layout_constraintBottom_toTopOf="@id/createAvatar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="join game"
         android:id="@+id/joinGameButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        app:layout_constraintTop_toBottomOf="@id/joinGameButton"
+        android:layout_height="wrap_content"
+        android:text="join game"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="Create Avatar"
-        android:id="@+id/createAvatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintTop_toBottomOf="@id/createGameButton" />
 
+    <!--    <Button-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/joinGameButton"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent"-->
+    <!--        android:text="Create Avatar"-->
+    <!--        android:id="@+id/createAvatar"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"/>-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

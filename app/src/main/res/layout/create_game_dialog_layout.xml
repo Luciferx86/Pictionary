@@ -22,21 +22,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/createGameUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:hint="Enter Username"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/joinGameHeading" />
 
     <LinearLayout
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/createGameUsername"
+        app:layout_constraintTop_toBottomOf="@id/joinGameHeading"
         android:id="@+id/roundSelectionLayout"
         android:layout_width="wrap_content"
         android:layout_marginTop="30dp"

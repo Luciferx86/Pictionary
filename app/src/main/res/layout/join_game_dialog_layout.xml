@@ -11,7 +11,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/joingameHeading"
+        android:id="@+id/joinGameHeading"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,20 +21,9 @@
         android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <EditText
-        app:layout_constraintTop_toBottomOf="@id/joingameHeading"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:hint="Enter Username"
-
-
-        android:id="@+id/usernameJoin"
-        android:layout_marginTop="50dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
     <EditText
-        app:layout_constraintTop_toBottomOf="@id/usernameJoin"
+        app:layout_constraintTop_toBottomOf="@id/joinGameHeading"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:hint="Enter Game Code"

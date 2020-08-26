@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="allEyes">
+        <item>@drawable/ic_eyes</item>
+        <item>@drawable/ic_eyes_1</item>
+        <item>@drawable/ic_eyes_2</item>
+        <item>@drawable/ic_eyes_3</item>
+        <item>@drawable/ic_eyes_4</item>
+        <item>@drawable/ic_eyes_5</item>
+        <item>@drawable/ic_eyes_6</item>
+        <item>@drawable/ic_eyes_7</item>
+        <item>@drawable/ic_eyes_8</item>
+        <item>@drawable/ic_eyes_9</item>
+
+    </array>
+
+    <array name="allMouths">
+        <item>@drawable/ic_mouth</item>
+        <item>@drawable/ic_mouth_1</item>
+        <item>@drawable/ic_mouth_2</item>
+        <item>@drawable/ic_mouth_3</item>
+        <item>@drawable/ic_mouth_4</item>
+        <item>@drawable/ic_mouth_5</item>
+        <item>@drawable/ic_mouth_6</item>
+        <item>@drawable/ic_mouth_7</item>
+    </array>
+
+</resources>
