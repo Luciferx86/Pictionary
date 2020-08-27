@@ -1,9 +1,9 @@
-package com.luciferx86.pictionary
+package com.luciferx86.pictionary.Utils
 
 /**
  * Created by Luciferx86 on 27/08/20.
  **/
 interface OnAvatarUploadCompleteListener {
 
-    fun avatarUploadComplete();
+    fun avatarUploadComplete(avatarURL:String);
 }

@@ -19,7 +19,9 @@ open class SinglePlayerPojo : Serializable, Parcelable {
     @SerializedName("rank")
     var rank: Int;
 
-
+    @Expose
+    @SerializedName("playerAvatar")
+    var playerAvatar: AvatarState;
 
 
     override fun describeContents(): Int {
@@ -30,12 +32,14 @@ open class SinglePlayerPojo : Serializable, Parcelable {
         dest.writeString(this.playerName)
         dest.writeInt(this.score)
         dest.writeInt(this.rank)
+        dest.writeSerializable(this.playerAvatar);
     }
 
     public constructor(incoming: Parcel) {
         playerName = incoming.readString()!!;
         score = incoming.readInt();
         rank = incoming.readInt();
+        playerAvatar = incoming.readSerializable() as AvatarState;
     }
 
     override fun toString(): String {
@@ -43,32 +47,32 @@ open class SinglePlayerPojo : Serializable, Parcelable {
     }
 
 
-
-
-    constructor(playerName: String, score: Int, rank: Int) {
+    constructor(playerName: String, score: Int, rank: Int, playerAvatar: AvatarState) {
         this.playerName = playerName
         this.score = score
         this.rank = rank
+        this.playerAvatar = playerAvatar;
     }
 
-    constructor(){
+    constructor() {
         this.playerName = "dummyPlayer"
         this.score = 0;
         this.rank = 0;
+        this.playerAvatar = AvatarState(-1914910, 0, 0, -1);
     }
-
 
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<SinglePlayerPojo> = object : Parcelable.Creator<SinglePlayerPojo> {
-            override fun createFromParcel(source: Parcel): SinglePlayerPojo? {
-                return SinglePlayerPojo(source)
-            }
+        val CREATOR: Parcelable.Creator<SinglePlayerPojo> =
+            object : Parcelable.Creator<SinglePlayerPojo> {
+                override fun createFromParcel(source: Parcel): SinglePlayerPojo? {
+                    return SinglePlayerPojo(source)
+                }
 
-            override fun newArray(size: Int): Array<SinglePlayerPojo?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<SinglePlayerPojo?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 }

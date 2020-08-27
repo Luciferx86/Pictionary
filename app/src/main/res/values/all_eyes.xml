@@ -26,4 +26,8 @@
         <item>@drawable/ic_mouth_7</item>
     </array>
 
+    <array name="allHats">
+        <item>@drawable/ic_hat</item>
+    </array>
+
 </resources>

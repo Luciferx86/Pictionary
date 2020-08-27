@@ -319,6 +319,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun parseAvatarFromJSON(json: JSONObject): AvatarState {
+        val faceColor = json["faceColor"] as Int;
+        val eyesIndex = json["eyesIndex"] as Int;
+        val mouthIndex = json["mouthIndex"] as Int;
+        val hatIndex = json["hatIndex"] as Int;
+        return AvatarState(faceColor, hatIndex, eyesIndex, mouthIndex);
+    }
+
     fun parsePlayerFromJSON(json: JSONObject): SinglePlayerPojo {
         var playerName: String? = null
         var playerScore: String? = null
@@ -327,7 +335,11 @@ class MainActivity : AppCompatActivity() {
             playerName = json.getString("playerName")
             playerScore = json.getString("score")
             playerRank = json.getString("rank")
-            val newPlayer = SinglePlayerPojo(playerName, playerScore.toInt(), playerRank.toInt());
+            val newPlayer = SinglePlayerPojo(
+                playerName, playerScore.toInt(), playerRank.toInt(), parseAvatarFromJSON(
+                    JSONObject(json.getString("playerAvatar"))
+                )
+            );
             return newPlayer;
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -438,7 +450,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mSocket?.on("roundChange"){args ->
+        mSocket?.on("roundChange") { args ->
             val data = args[0] as JSONObject;
             val allPlayers = data["playerStats"] as JSONArray;
             parsePlayerScores(allPlayers);
@@ -446,11 +458,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun parsePlayerScores(scores: JSONArray){
-        for(i in 0..scores.length()-1){
-            Log.d("ScoreVal",scores[i].toString());
+    private fun parsePlayerScores(scores: JSONArray) {
+        for (i in 0..scores.length() - 1) {
+            Log.d("ScoreVal", scores[i].toString());
             val currScore = scores[i] as JSONObject;
-            playersScore.add(ScoreCard(currScore["playerName"] as String, currScore["score"] as Int));
+            playersScore.add(
+                ScoreCard(
+                    currScore["playerName"] as String,
+                    currScore["score"] as Int
+                )
+            );
 
         }
         runOnUiThread {

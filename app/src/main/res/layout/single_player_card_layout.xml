@@ -1,50 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/curved_bg"
-    android:paddingBottom="10dp"
-    android:layout_height="wrap_content">
-    <ImageView
+    android:paddingBottom="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/playerAvatar"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+
         app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@drawable/person"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:id="@+id/face"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/ic_face"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/hat" />
+
+        <View
+            android:id="@+id/eyes"
+            android:layout_width="35dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="11dp"
+            android:background="@drawable/ic_eyes_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/face" />
+
+        <View
+            android:id="@+id/mouth"
+            android:layout_width="31dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ic_mouth_3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/eyes" />
+
+        <View
+            android:id="@+id/hat"
+            android:layout_width="52dp"
+            android:layout_height="15dp"
+            android:background="@drawable/ic_hat"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/playerName"
-        app:layout_constraintTop_toTopOf="@id/playerAvatar"
-        app:layout_constraintLeft_toRightOf="@id/playerAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:text="Luciferx86"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp" />
+        app:layout_constraintLeft_toRightOf="@id/playerAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/playerScore"
-        app:layout_constraintTop_toBottomOf="@id/playerName"
-        app:layout_constraintLeft_toLeftOf="@id/playerName"
         android:layout_width="wrap_content"
-        android:text="1310"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:text="1310"
         android:textSize="9sp"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintLeft_toLeftOf="@id/playerName"
+        app:layout_constraintTop_toBottomOf="@id/playerName" />
 
     <TextView
         android:id="@+id/playerRank"
-        app:layout_constraintTop_toTopOf="@id/playerName"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
         android:text="#3"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/playerName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
