@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var sendMessageButton: ImageView;
     lateinit var gameInfoLayout: ConstraintLayout;
     lateinit var whoseTurnLayout: ConstraintLayout;
+//    lateinit var gameEndedLayout: ConstraintLayout;
     lateinit var whoseTurnText: TextView;
     private val allColors: ArrayList<Int> = ArrayList();
     private val allPlayers: ArrayList<SinglePlayerPojo> = ArrayList();
@@ -191,6 +192,8 @@ class MainActivity : AppCompatActivity() {
         whoseTurnText = findViewById(R.id.whoseTurnText);
         paintBucket = findViewById(R.id.paintBucket);
         sendMessageButton = findViewById(R.id.sendGuess);
+
+//        gameEndedLayout = findViewById(R.id.gameEndedLayout);
 
         allScoresRecycler = findViewById(R.id.allScoresRecycler)
 
@@ -437,6 +440,20 @@ class MainActivity : AppCompatActivity() {
             }
         });
 
+        mSocket?.on("gameEnded", Emitter.Listener { args ->
+            runOnUiThread { //Code for the UiThread
+                val data = args[0] as JSONObject;
+                val allScoresString = data["allScores"];
+                val allScores: ArrayList<ScoreCard> =
+                    Gson().fromJson(
+                        allScoresString.toString(),
+                        object : TypeToken<ArrayList<ScoreCard>>() {}.type
+                    )
+                updateGameScores(allScores);
+                showGameEnded();
+            }
+        });
+
         mSocket?.on("allScores") { args ->
             val data = args[0] as JSONObject;
             val allScoresString = data["allScores"];
@@ -459,9 +476,11 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun parsePlayerScores(scores: JSONArray) {
+        playersScore.clear();
         for (i in 0..scores.length() - 1) {
             Log.d("ScoreVal", scores[i].toString());
             val currScore = scores[i] as JSONObject;
+
             playersScore.add(
                 ScoreCard(
                     currScore["playerName"] as String,
@@ -476,6 +495,66 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getTopThreePlayers(): ArrayList<SinglePlayerPojo> {
+
+        var first: Int
+        var second: Int
+        var third: Int
+
+        var newList = ArrayList<SinglePlayerPojo>();
+
+        third = Int.MIN_VALUE.also { second = it }.also { first = it };
+
+        for (i in 0..allPlayers.size - 1) {
+            if (allPlayers[i].score > first) {
+                third = second;
+                second = first;
+                first = allPlayers[i].score;
+            } else if (allPlayers[i].score > second) {
+                third = second;
+                second = allPlayers[i].score;
+            } else if (allPlayers[i].score > third)
+                third = allPlayers[i].score;
+        }
+        for (player in allPlayers) {
+            if (player.score == first) {
+                newList.add(player);
+                break;
+            }
+        }
+
+        for (player in allPlayers) {
+            if (player.score == second) {
+                newList.add(player);
+                break;
+            }
+        }
+
+        for (player in allPlayers) {
+            if (player.score == third) {
+                newList.add(player);
+                break;
+            }
+        }
+        return newList;
+    }
+
+    private fun showGameEnded() {
+
+//        gameEndedLayout.visibility = View.VISIBLE;
+//        var topThreePlayers: ArrayList<SinglePlayerPojo> = getTopThreePlayers();
+
+
+        whoseTurnText.text = "The Game has Ended!"
+        whoseTurnLayout.visibility = View.VISIBLE;
+        val animation: Animation = AnimationUtils.loadAnimation(
+            applicationContext,
+            R.anim.drawing_bounce
+        )
+        whoseTurnText.startAnimation(animation);
+
+    }
+
     private fun showWhoseTurn(playerName: String) {
         whoseTurnText.text = "$playerName is Drawing!"
         whoseTurnLayout.visibility = View.VISIBLE;
@@ -483,14 +562,14 @@ class MainActivity : AppCompatActivity() {
             applicationContext,
             R.anim.drawing_bounce
         )
-        startGameButton.startAnimation(animation);
+        whoseTurnText.startAnimation(animation);
         Looper.myLooper()?.let {
             Handler(it).postDelayed({
                 //Your Code
                 runOnUiThread {
                     whoseTurnLayout.visibility = View.GONE;
                 }
-            }, 2000)
+            }, 2600)
         }
 
     }

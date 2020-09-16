@@ -180,27 +180,112 @@
             android:visibility="gone">
 
             <TextView
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="10dp"
-                android:textSize="30sp"
                 android:id="@+id/roundEndedText"
-                app:layout_constraintBottom_toTopOf="@id/allScoresRecycler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3rd Round ended!"/>
+                android:layout_marginTop="10dp"
+                android:text="3rd Round ended!"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toTopOf="@id/allScoresRecycler"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/allScoresRecycler"
-                app:layout_constraintTop_toBottomOf="@id/roundEndedText"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="match_parent"
-                android:layout_marginTop="15dp"
                 android:layout_height="0dp"
-                />
+                android:layout_marginTop="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/roundEndedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gameEndedLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/curved_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/firstPLayerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="110dp"
+                android:text="Luciferx86"
+                app:layout_constraintBottom_toBottomOf="@id/podium"
+                app:layout_constraintLeft_toLeftOf="@id/podium" />
+
+            <include
+                android:id="@+id/firstPlayerAvatar"
+                layout="@layout/score_card_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toTopOf="@id/firstPLayerName"
+                app:layout_constraintLeft_toLeftOf="@id/firstPLayerName"
+                app:layout_constraintRight_toRightOf="@id/firstPLayerName" />
+
+            <TextView
+                android:id="@+id/secondPLayerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="130dp"
+                android:text="Luciferx86"
+                app:layout_constraintBottom_toBottomOf="@id/podium"
+                app:layout_constraintLeft_toLeftOf="@id/podium"
+                app:layout_constraintRight_toRightOf="@id/podium" />
+
+            <include
+                android:id="@+id/secondPlayerAvatar"
+
+                layout="@layout/score_card_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toTopOf="@id/thirdPLayerName"
+                app:layout_constraintLeft_toLeftOf="@id/thirdPLayerName"
+                app:layout_constraintRight_toRightOf="@id/thirdPLayerName" />
+
+            <TextView
+                android:id="@+id/thirdPLayerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp"
+                android:text="Luciferx86"
+                app:layout_constraintBottom_toBottomOf="@id/podium"
+
+                app:layout_constraintRight_toRightOf="@id/podium" />
+
+            <include
+                android:id="@+id/thirdPlayerAvatar"
+                layout="@layout/score_card_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toTopOf="@id/secondPLayerName"
+                app:layout_constraintLeft_toLeftOf="@id/secondPLayerName"
+                app:layout_constraintRight_toRightOf="@id/secondPLayerName" />
+
+
+            <ImageView
+                android:id="@+id/podium"
+                android:layout_width="234dp"
+                android:layout_height="121dp"
+                android:layout_marginBottom="30dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/podium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -225,9 +310,9 @@
 
         <FrameLayout
             android:id="@+id/roundsCountLayout"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
 
             <ImageView
                 android:layout_width="40dp"
@@ -249,7 +334,6 @@
                 android:textStyle="bold" />
         </FrameLayout>
     </RelativeLayout>
-
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

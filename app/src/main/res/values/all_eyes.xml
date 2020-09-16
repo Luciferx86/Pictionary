@@ -12,6 +12,7 @@
         <item>@drawable/ic_eyes_7</item>
         <item>@drawable/ic_eyes_8</item>
         <item>@drawable/ic_eyes_9</item>
+        <item>@drawable/ic_eyes_10</item>
 
     </array>
 
@@ -28,6 +29,16 @@
 
     <array name="allHats">
         <item>@drawable/ic_hat</item>
+        <item>@drawable/ic_hat_2</item>
+        <item>@drawable/ic_hat_3</item>
+        <item>@drawable/ic_hat_4</item>
+        <item>@drawable/ic_hat_5</item>
+        <item>@drawable/ic_hat_6</item>
+        <item>@drawable/ic_hat_7</item>
+        <item>@drawable/ic_hat_8</item>
+        <item>@drawable/ic_hat_9</item>
+        <item>@drawable/ic_hat_10</item>
+        <item>@drawable/ic_hat_11</item>
     </array>
 
 </resources>

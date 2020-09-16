@@ -55,7 +55,7 @@ class LaunchpadActivity : AppCompatActivity() {
     lateinit var avatarlayout: ConstraintLayout;
     lateinit var usernameField: EditText;
 
-    var myAvatarState: AvatarState = AvatarState(-1914910, 0, 0, -1);
+    var myAvatarState: AvatarState = AvatarState(-1914910, 0, 0, 0);
 
     lateinit var sharedPreferences: SharedPreferences;
 
@@ -259,33 +259,38 @@ class LaunchpadActivity : AppCompatActivity() {
                     val codeText = joinCodeText?.text.toString()
                     val username = usernameField?.text.toString()
                     if (codeText.length == 4 && username.length >= 4) {
-                        mSocket?.emit("joinGame", username, getAvatarJson(myAvatarState), codeText, Ack() {
-                            saveUsernameToStorage(username);
-                            saveAvatarToStorage();
-                            val data = it[0] as JSONObject
+                        mSocket?.emit(
+                            "joinGame",
+                            username,
+                            getAvatarJson(myAvatarState),
+                            codeText,
+                            Ack() {
+                                saveUsernameToStorage(username);
+                                saveAvatarToStorage();
+                                val data = it[0] as JSONObject
 
-                            Log.d("GameJoined", "code " + data["gameState"]);
-                            try {
-                                val gameState = data["gameState"] as JSONObject;
-                                val i = Intent(this, MainActivity::class.java);
-                                val newPlayer =
-                                    parsePlayerFromJSON(data["newPlayer"] as JSONObject);
-                                Log.d("NewPlayerVal", newPlayer.toString());
-                                val code: String = data["gameCode"] as String;
-                                i.putExtra("gameCode", code.toInt());
-                                i.putExtra("gameState", gameState.toString());
-                                i.putExtra("newPlayer", newPlayer as Parcelable);
-                                i.putExtra("gameCreator", false);
-                                startActivity(i);
+                                Log.d("GameJoined", "code " + data["gameState"]);
+                                try {
+                                    val gameState = data["gameState"] as JSONObject;
+                                    val i = Intent(this, MainActivity::class.java);
+                                    val newPlayer =
+                                        parsePlayerFromJSON(data["newPlayer"] as JSONObject);
+                                    Log.d("NewPlayerVal", newPlayer.toString());
+                                    val code: String = data["gameCode"] as String;
+                                    i.putExtra("gameCode", code.toInt());
+                                    i.putExtra("gameState", gameState.toString());
+                                    i.putExtra("newPlayer", newPlayer as Parcelable);
+                                    i.putExtra("gameCreator", false);
+                                    startActivity(i);
 
-                            } catch (e: Exception) {
-                                e.printStackTrace();
-                                runOnUiThread {
-                                    Toast.makeText(this, "Invalid Game Code", Toast.LENGTH_LONG)
-                                        .show();
+                                } catch (e: Exception) {
+                                    e.printStackTrace();
+                                    runOnUiThread {
+                                        Toast.makeText(this, "Invalid Game Code", Toast.LENGTH_LONG)
+                                            .show();
+                                    }
                                 }
-                            }
-                        });
+                            });
                     } else {
                         Toast.makeText(this, "Code Invalid", Toast.LENGTH_LONG).show();
                     }
@@ -461,12 +466,13 @@ class LaunchpadActivity : AppCompatActivity() {
         var playerScore: String? = null
         var playerRank: String? = null
         var playerAvatar: AvatarState? = null
+        var newPlayer: SinglePlayerPojo? = null;
         try {
             playerName = json.getString("playerName")
             playerScore = json.getString("score")
             playerRank = json.getString("rank")
             playerAvatar = parseAvatarFromJSON(JSONObject(json.getString("playerAvatar")));
-            val newPlayer = SinglePlayerPojo(
+            newPlayer = SinglePlayerPojo(
                 playerName,
                 playerScore.toInt(),
                 playerRank.toInt(),

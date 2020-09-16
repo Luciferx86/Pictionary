@@ -65,7 +65,7 @@ class ActivePlayersAdapter(
 
             this.playerName?.text = player.playerName;
             this.playerScore?.text = player.score.toString();
-            this.playerRank?.text = "#" + player.rank.toString()
+            this.playerRank?.text = "#" + (player.rank + 1).toString()
             this.playerAvatar?.findViewById<View>(R.id.face)?.backgroundTintList =
                 ColorStateList.valueOf(player.playerAvatar.faceColor);
             setAvatarEyes(player.playerAvatar.eyesIndex);
